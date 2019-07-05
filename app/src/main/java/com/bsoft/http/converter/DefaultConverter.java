@@ -1,6 +1,7 @@
 package com.bsoft.http.converter;
 
-import java.text.ParseException;
+import com.bsoft.http.exception.ConvertException;
+
 
 /**
  * Author by wangzhaox,
@@ -11,7 +12,7 @@ import java.text.ParseException;
  */
 public class DefaultConverter implements IConverter<String> {
     @Override
-    public String convert(String result) throws ParseException {
+    public String convert(String result) throws ConvertException {
         return result;
     }
 }

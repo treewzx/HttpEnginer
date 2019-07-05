@@ -1,10 +1,9 @@
 package com.bsoft.http.converter;
 
 import com.alibaba.fastjson.JSON;
+import com.bsoft.http.exception.ConvertException;
 import com.bsoft.http.utils.ClassUtil;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
 
 /**
  * Author by wangzhaox,
@@ -16,7 +15,7 @@ import java.text.ParseException;
 
 public class GsonConverter<T> implements IConverter<T> {
     @Override
-    public T convert(String result) throws ParseException {
+    public T convert(String result) throws ConvertException {
         Class<?> clazz = ClassUtil.analysisClazzInfo(this, 0);
         T t = (T) JSON.parseObject(result,clazz);
         return t;

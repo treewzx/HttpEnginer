@@ -2,7 +2,8 @@ package com.bsoft.http.converter;
 
 
 
-import java.text.ParseException;
+import com.bsoft.http.exception.ConvertException;
+
 
 import io.reactivex.annotations.NonNull;
 
@@ -15,6 +16,6 @@ import io.reactivex.annotations.NonNull;
  * PS: Not easy to write code, please indicate.
  */
 public interface IConverter<T> {
-    T convert(@NonNull String result) throws ParseException;
+    T convert(@NonNull String result) throws ConvertException;
 
 }

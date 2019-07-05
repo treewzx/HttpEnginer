@@ -31,7 +31,7 @@ public interface IHttpRequest {
 
     Observable<String> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params);
 
-    <T> Observable<T> get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter);
+    <T> Observable<Optional<T>> get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter);
 
 
     /***********************************Post请求***************************************/

@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.bsoft.http.HttpEnginerConfig;
 import com.bsoft.http.converter.IConverter;
 import com.bsoft.http.entity.ProgressInfo;
+import com.bsoft.http.exception.ConvertException;
 import com.bsoft.http.exception.HttpException;
 import com.bsoft.http.exception.IOStreamReadException;
 import com.bsoft.http.httpcallback.IHttpCallback;
@@ -76,22 +77,25 @@ public class RetrofitRequest implements IHttpRequest {
     }
 
     @Override
-    public <T> Observable<T> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params, final IConverter<T> converter) {
-        return get(config, url, headers, params).map(new Function<String, T>() {
+    public <T> Observable<Optional<T>> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params, final IConverter<T> converter) {
+        return get(config, url, headers, params)
+                .compose(new ObservableTransformer<String, Optional<T>>() {
             @Override
-            public T apply(String result) throws ParseException {
-                if (!TextUtils.isEmpty(result)) {
-                    try {
-                        T t = converter.convert(result);
-                        return t;
-                    } catch (Exception e) {
-                        throw new ParseException("解析错误", 0);
+            public ObservableSource<Optional<T>> apply(Observable<String> upstream) {
+                return upstream.flatMap(new Function<String, ObservableSource<Optional<T>>>() {
+                    @Override
+                    public ObservableSource<Optional<T>> apply(String result) throws Exception {
+                        try {
+                            T t = converter.convert(result);
+                            return Observable.just(Optional.of(t));
+                        } catch (Exception e) {
+                            throw e;
+
+                        }
                     }
-                }
-                return null;
+                });
             }
         });
-
     }
 
 
@@ -140,7 +144,7 @@ public class RetrofitRequest implements IHttpRequest {
                                     T t = converter.convert(result);
                                     return Observable.just(Optional.of(t));
                                 } catch (Exception e) {
-                                    throw new ParseException(e.getMessage(), 0);
+                                    throw e;
 
                                 }
                             }
@@ -162,8 +166,7 @@ public class RetrofitRequest implements IHttpRequest {
                                     T t = converter.convert(result);
                                     return Observable.just(Optional.of(t));
                                 } catch (Exception e) {
-                                    throw new ParseException(e.getMessage(), 0);
-
+                                    throw e;
                                 }
                             }
                         });
