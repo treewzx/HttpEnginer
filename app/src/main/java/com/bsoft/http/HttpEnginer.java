@@ -150,7 +150,7 @@ public class HttpEnginer {
         return mHttpEnginerConfig.getHttpRequest().get(mHttpEnginerConfig, mUrl, paramMap.getHeaders(), paramMap.getParams());
     }
 
-    public <T> Observable<T> get(IConverter<T> converter) {
+    public <T> Observable<Optional<T>> get(IConverter<T> converter) {
         RequestParamMap paramMap = onPreRequest(mHeaders, mParams);
         return mHttpEnginerConfig.getHttpRequest().get(mHttpEnginerConfig, mUrl, paramMap.getHeaders(), paramMap.getParams(), converter);
     }
