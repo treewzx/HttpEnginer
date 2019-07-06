@@ -67,11 +67,15 @@ public class ExceptionEnginer {
             ex = new ApiException(e, ERROR.HTTP_ERROR);
             if (responseCode >= 400 && responseCode < 500) {
                 ex.message = "客户端请求错误";
-            } else if (responseCode > 500) {
+            } else if (responseCode >= 500) {
                 ex.message = "服务器处理出现错误";
             }
             return ex;
-        } else if (e instanceof ParseException) {
+        } else if (e instanceof ConvertException) {
+            ex = new ApiException(e, ERROR.PARSE_ERROR);
+            ex.message = e.getMessage();
+            return ex;
+        }else if (e instanceof ParseException) {
             ex = new ApiException(e, ERROR.PARSE_ERROR);
             ex.message = e.getMessage();
             return ex;
