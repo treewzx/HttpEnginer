@@ -34,8 +34,9 @@ public interface ServiceApi {
 
     @FormUrlEncoded
     @POST()
-    Call<ResponseBody> post(@HeaderMap Map<String, String> headersMap, @Url String url, @FieldMap Map<String, String> params);
+    Call<ResponseBody> post(@HeaderMap Map<String, String> headersMap, @Url String url, @FieldMap Map<String, Object> params);
 
+    /******************************请求体为JSON格式开始********************************/
     @Headers({"Content-Type: application/json","Accept: application/json"})
     @POST()
     Call<ResponseBody> post(@Url String url, @Body RequestBody requestBody);
@@ -44,11 +45,13 @@ public interface ServiceApi {
     @POST()
     Call<ResponseBody> post(@HeaderMap Map<String, String> headersMap, @Url String url, @Body RequestBody requestBody);
 
-    @GET()
-    Call<ResponseBody> get(@Url String url, @QueryMap Map<String, String> params);
+    /******************************请求体为JSON格式结束********************************/
 
     @GET()
-    Call<ResponseBody> get(@HeaderMap Map<String, String> headersMap, @Url String url, @QueryMap Map<String, String> params);
+    Call<ResponseBody> get(@Url String url, @QueryMap Map<String, Object> params);
+
+    @GET()
+    Call<ResponseBody> get(@HeaderMap Map<String, String> headersMap, @Url String url, @QueryMap Map<String, Object> params);
 
     @Streaming
     @GET

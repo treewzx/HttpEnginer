@@ -27,25 +27,25 @@ public interface IHttpRequest {
 
     /**********************************Get请求*****************************************/
 
-    void get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IHttpCallback callback);
+    void get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IHttpCallback callback);
 
-    Observable<String> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params);
+    Observable<String> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, Object> params);
 
-    <T> Observable<Optional<T>> get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter);
+    <T> Observable<Optional<T>> get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IConverter<T> converter);
 
 
     /***********************************Post请求***************************************/
 
-    void post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IHttpCallback callback);
+    void post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IHttpCallback callback);
 
-    Observable<String> post(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params);
+    Observable<String> post(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, Object> params);
 
     //<T> Observable<T> post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter);
     //采用Optional<T>是因为RxJava2已不允许发Null事件，操作符都会在发送前判断发送内容是否为null，如果是就是抛出NPE，走onError，所以对其包裹一层，以便正常传递
-    <T> Observable<Optional<T>> post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter);
+    <T> Observable<Optional<T>> post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IConverter<T> converter);
 
     //异步请求，回调在主线程执行
-    <T> Observable<Optional<T>> postAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter);
+    <T> Observable<Optional<T>> postAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IConverter<T> converter);
 
     /*****************************************下载文件*************************************/
 
@@ -56,9 +56,9 @@ public interface IHttpRequest {
 
     /********************************************上传文件*************************************/
 
-    void uploadAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IHttpCallback callback, @Nullable OnLoadProgressListener listener, File... files);
+    void uploadAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IHttpCallback callback, @Nullable OnLoadProgressListener listener, File... files);
 
-    Observable<ProgressInfo> upload(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, File... files);
+    Observable<ProgressInfo> upload(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, File... files);
 
 
 }

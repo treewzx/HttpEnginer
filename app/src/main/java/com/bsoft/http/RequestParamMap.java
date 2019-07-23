@@ -10,19 +10,19 @@ import java.util.Map;
  * PS: Not easy to write code, please indicate.
  */
 public class RequestParamMap {
-    private Map<String, String> mParams;
+    private Map<String, Object> mParams;
     private Map<String, String> mHeaders;
 
-    public RequestParamMap(Map<String, String> headers, Map<String, String> params) {
+    public RequestParamMap(Map<String, String> headers, Map<String, Object> params) {
         this.mParams = params;
         this.mHeaders = headers;
     }
 
-    public Map<String, String> getParams() {
+    public Map<String, Object> getParams() {
         return mParams;
     }
 
-    public void setParams(Map<String, String> params) {
+    public void setParams(Map<String, Object> params) {
         this.mParams = params;
     }
 

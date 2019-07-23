@@ -34,7 +34,7 @@ public abstract class HttpCallback<T> implements IHttpCallback {
     }
 
     @Override
-    public void onPreRequest(Map<String, String> headers, Map<String, String> params) {
+    public void onPreRequest(Map<String, String> headers, Map<String, Object> params) {
 
     }
 

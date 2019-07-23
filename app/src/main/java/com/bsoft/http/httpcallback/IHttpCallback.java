@@ -12,7 +12,7 @@ import java.util.Map;
 public interface IHttpCallback {
 
     /** 请求网络开始前*/
-    void onPreRequest(Map<String, String> headers, Map<String, String> params);
+    void onPreRequest(Map<String, String> headers, Map<String, Object> params);
 
     /** 对返回数据进行操作的回调 */
     void onSuccess(String result);

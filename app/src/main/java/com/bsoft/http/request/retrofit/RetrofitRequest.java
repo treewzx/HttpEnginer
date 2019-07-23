@@ -60,13 +60,13 @@ public class RetrofitRequest implements IHttpRequest {
 
     /***********************Get请求**************************/
     @Override
-    public void get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, final IHttpCallback callback) {
+    public void get(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, final IHttpCallback callback) {
         call = RetrofitClient.getServiceApi(config).get(headers, url, params);
         enqueue(call, callback);
     }
 
     @Override
-    public Observable<String> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params) {
+    public Observable<String> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, Object> params) {
         return Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -77,7 +77,7 @@ public class RetrofitRequest implements IHttpRequest {
     }
 
     @Override
-    public <T> Observable<Optional<T>> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params, final IConverter<T> converter) {
+    public <T> Observable<Optional<T>> get(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, Object> params, final IConverter<T> converter) {
         return get(config, url, headers, params)
                 .compose(new ObservableTransformer<String, Optional<T>>() {
             @Override
@@ -102,7 +102,7 @@ public class RetrofitRequest implements IHttpRequest {
     /**************************************Post请求************************************/
 
     @Override
-    public void post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, final IHttpCallback callback) {
+    public void post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, final IHttpCallback callback) {
         if (config.getMediaType() == HttpEnginerConfig.MediaType.FORM) {
             call = RetrofitClient.getServiceApi(config).post(headers, url, params);
         } else {
@@ -114,7 +114,7 @@ public class RetrofitRequest implements IHttpRequest {
     }
 
     @Override
-    public Observable<String> post(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params) {
+    public Observable<String> post(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, Object> params) {
         return Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -132,7 +132,7 @@ public class RetrofitRequest implements IHttpRequest {
     }
 
     @Override
-    public <T> Observable<Optional<T>> post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter) {
+    public <T> Observable<Optional<T>> post(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IConverter<T> converter) {
         return post(config, url, headers, params)
                 .compose(new ObservableTransformer<String, Optional<T>>() {
                     @Override
@@ -154,7 +154,7 @@ public class RetrofitRequest implements IHttpRequest {
     }
 
     @Override
-    public <T> Observable<Optional<T>> postAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IConverter<T> converter) {
+    public <T> Observable<Optional<T>> postAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IConverter<T> converter) {
         return post(config, url, headers, params)
                 .compose(new ObservableTransformer<String, Optional<T>>() {
                     @Override
@@ -204,11 +204,11 @@ public class RetrofitRequest implements IHttpRequest {
      * @param files
      */
     @Override
-    public void uploadAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, String> params, IHttpCallback callback, OnLoadProgressListener listener, File... files) {
+    public void uploadAsync(HttpEnginerConfig config, String url, Map<String, String> headers, Map<String, Object> params, IHttpCallback callback, OnLoadProgressListener listener, File... files) {
         RequestBody realRequestBody = null;
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            builder.addFormDataPart(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            builder.addFormDataPart(entry.getKey(), entry.getValue().toString());
         }
         for (File file : files) {
             RequestBody requestBody = RequestBody.create(MediaType.parse(FileUtil.getMIME(file.getAbsolutePath())), file);
@@ -224,14 +224,14 @@ public class RetrofitRequest implements IHttpRequest {
     }
 
     @Override
-    public Observable<ProgressInfo> upload(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, String> params, final File... files) {
+    public Observable<ProgressInfo> upload(final HttpEnginerConfig config, final String url, final Map<String, String> headers, final Map<String, Object> params, final File... files) {
         return Observable.create(new ObservableOnSubscribe<ProgressInfo>() {
             @Override
             public void subscribe(ObservableEmitter<ProgressInfo> emitter) throws Exception {
                 try {
                     MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-                    for (Map.Entry<String, String> entry : params.entrySet()) {
-                        builder.addFormDataPart(entry.getKey(), entry.getValue());
+                    for (Map.Entry<String, Object> entry : params.entrySet()) {
+                        builder.addFormDataPart(entry.getKey(), entry.getValue().toString());
                     }
                     for (File file : files) {
                         RequestBody requestBody = RequestBody.create(MediaType.parse(FileUtil.getMIME(file.getAbsolutePath())), file);

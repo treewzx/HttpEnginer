@@ -27,11 +27,11 @@ import io.reactivex.functions.BiFunction;
  */
 public class HttpEnginer {
     private static HttpEnginerConfig mHttpEnginerConfig;
-    private static Map<String, String> mParams;
+    private static Map<String, Object> mParams;
     private static Map<String, String> mHeaders;
     private static boolean mIsInterceptRequestParams = true;
     private String mUrl;
-    private static BiFunction<Map<String, String>, Map<String, String>, RequestParamMap> mOnInterceptFunction;
+    private static BiFunction<Map<String, String>, Map<String, Object>, RequestParamMap> mOnInterceptFunction;
     private OnLoadProgressListener mOnLoadProgressListener; //上传/下载文件的进度监听
 
     private HttpEnginer() {
@@ -76,16 +76,12 @@ public class HttpEnginer {
         return this;
     }
 
-    public HttpEnginer addParam(String key, String value) {
+    public HttpEnginer addParam(String key, Object value) {
         mParams.put(key, value);
         return this;
     }
-    public HttpEnginer addParam(String key, int value) {
-        mParams.put(key, String.valueOf(value));
-        return this;
-    }
 
-    public HttpEnginer addParams(Map<String, String> params) {
+    public HttpEnginer addParams(Map<String, Object> params) {
         mParams.putAll(params);
         return this;
     }
@@ -117,12 +113,12 @@ public class HttpEnginer {
 
 
     /*************************以下是对请求头和请求参数做一层拦截处理*****************************/
-    public static void setOnInterceptFunction(BiFunction<Map<String, String>, Map<String, String>, RequestParamMap> function) {
+    public static void setOnInterceptFunction(BiFunction<Map<String, String>, Map<String, Object>, RequestParamMap> function) {
         mOnInterceptFunction = function;
     }
 
-    private RequestParamMap onPreRequest(Map<String, String> headers, Map<String, String> params) {
-        BiFunction<Map<String, String>, Map<String, String>, RequestParamMap> f = mOnInterceptFunction;
+    private RequestParamMap onPreRequest(Map<String, String> headers, Map<String, Object> params) {
+        BiFunction<Map<String, String>, Map<String, Object>, RequestParamMap> f = mOnInterceptFunction;
         RequestParamMap paramMap = new RequestParamMap(headers, params);
         if (f == null || !mIsInterceptRequestParams){
             mIsInterceptRequestParams = true;
