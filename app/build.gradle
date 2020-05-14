@@ -37,7 +37,7 @@ dependencies {
 }
 
 def SDK_BASENAME = "HttpEnginer";
-def SDK_VERSION = "_V0.0.4";
+def SDK_VERSION = "_V0.0.7";
 
 task makeJar(type : Copy){
     //刪除存在的

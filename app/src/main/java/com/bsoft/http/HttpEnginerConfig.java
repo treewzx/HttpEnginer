@@ -1,9 +1,13 @@
 package com.bsoft.http;
 
+import android.app.Application;
+
+import com.bsoft.http.https.KeyStoreInfo;
 import com.bsoft.http.parser.DefaultCallbackParser;
 import com.bsoft.http.parser.ICallbackParser;
 import com.bsoft.http.request.IHttpRequest;
 
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,7 +28,11 @@ public final class HttpEnginerConfig {
     final long connectTimeout;
     final TimeUnit timeoutUnit;
     final ICallbackParser parser;
-    final MediaType mediaType ;
+    final MediaType mediaType;
+    final InputStream certInputStream;
+    final Application context;
+    final KeyStoreInfo keyStoreInfo;
+
     public enum MediaType {
         FORM, JSON
     }
@@ -39,6 +47,9 @@ public final class HttpEnginerConfig {
         timeoutUnit = builder.mTimeoutUnit;
         parser = builder.mParser;
         mediaType = builder.mMediaType;
+        certInputStream = builder.mCertInputStream;
+        context = builder.mContext;
+        keyStoreInfo = builder.mKeyStoreInfo;
     }
 
     public String getBaseUrl() {
@@ -77,6 +88,19 @@ public final class HttpEnginerConfig {
         return mediaType;
     }
 
+    public InputStream getCertInputStream() {
+        return certInputStream;
+    }
+
+    public KeyStoreInfo getKeyStoreInfo() {
+        return keyStoreInfo;
+    }
+
+
+    public Application getContext() {
+        return context;
+    }
+
 
     public Builder newBuilder() {
         return new Builder(this);
@@ -91,7 +115,11 @@ public final class HttpEnginerConfig {
         private long mConnectTimeout;
         private TimeUnit mTimeoutUnit;
         private ICallbackParser mParser;
-        private MediaType mMediaType ;
+        private MediaType mMediaType;
+        private InputStream mCertInputStream;
+        private Application mContext;
+        private KeyStoreInfo mKeyStoreInfo;
+
 
 
         public Builder() {
@@ -107,6 +135,8 @@ public final class HttpEnginerConfig {
             mConnectTimeout = httpEnginerConfig.connectTimeout;
             mTimeoutUnit = httpEnginerConfig.timeoutUnit;
             mParser = httpEnginerConfig.parser;
+            mCertInputStream = httpEnginerConfig.certInputStream;
+            mContext = httpEnginerConfig.context;
         }
 
 
@@ -117,6 +147,20 @@ public final class HttpEnginerConfig {
 
         public Builder baseUrl(String baseUrl) {
             this.mBaseUrl = baseUrl;
+            return this;
+        }
+
+        public Builder addCertRes(InputStream certInputStream) {
+            this.mCertInputStream = certInputStream;
+            return this;
+        }
+        public Builder addKeyStore(KeyStoreInfo keyStoreInfo) {
+            this.mKeyStoreInfo = keyStoreInfo;
+            return this;
+        }
+
+        public Builder context(Application context){
+            this.mContext = context;
             return this;
         }
 
@@ -155,6 +199,7 @@ public final class HttpEnginerConfig {
             return this;
         }
 
+
         public HttpEnginerConfig build() {
             if (mReadTimeout <= 0) {
                 readTimeOut(DEFAULT_SECONDS);
@@ -171,7 +216,7 @@ public final class HttpEnginerConfig {
             if (mParser == null) {
                 parser(new DefaultCallbackParser());
             }
-            if(mMediaType == null){
+            if (mMediaType == null) {
                 mMediaType = MediaType.JSON;
             }
             return new HttpEnginerConfig(this);

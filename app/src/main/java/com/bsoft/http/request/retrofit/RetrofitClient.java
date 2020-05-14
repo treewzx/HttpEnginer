@@ -1,10 +1,25 @@
 package com.bsoft.http.request.retrofit;
 
 
+import android.app.Application;
+
 import com.bsoft.http.HttpEnginerConfig;
+import com.bsoft.http.https.ClientKeyStoreException;
+import com.bsoft.http.https.HttpsUtils;
+import com.bsoft.http.https.KeyStoreInfo;
 import com.bsoft.http.request.retrofit.interceptor.NullInterceptor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
@@ -23,15 +38,34 @@ public class RetrofitClient {
 
     public static ServiceApi getServiceApi(HttpEnginerConfig config) {
         if (mServiceApi == null) {
-            X509TrustManager trustAllCert = new X509TrustManagerImpl();
-            SSLSocketFactory sslSocketFactory = new SSLSocketFactoryImpl(trustAllCert);
-            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
                     .readTimeout(config.getReadTimeout(), config.getTimeoutUnit())
                     .writeTimeout(config.getWriteTimeout(), config.getTimeoutUnit())
                     .connectTimeout(config.getConnectTimeout(), config.getTimeoutUnit())
-                   // .sslSocketFactory(sslSocketFactory, trustAllCert) //添加信任证书
-                    .addNetworkInterceptor((config.isDebug()) ? (new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)) : new NullInterceptor())
-                    .build();
+                    .addNetworkInterceptor((config.isDebug()) ? (new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)) : new NullInterceptor());
+            if (config.getBaseUrl().startsWith("https")) {
+                SSLSocketFactory sslSocketFactory = null;
+                if (config.getKeyStoreInfo() != null) {
+                    KeyStoreInfo keyStoreInfo = config.getKeyStoreInfo();
+                    try {
+                        sslSocketFactory = HttpsUtils.getSSLSocketFactory_KeyStore(keyStoreInfo.storeType, keyStoreInfo.alias, keyStoreInfo.keyFileIs, keyStoreInfo.storePwd);
+                    } catch (ClientKeyStoreException e) {
+                        e.printStackTrace();
+                    }
+                } else if (config.getCertInputStream() != null) {
+
+                    try {
+                        sslSocketFactory = HttpsUtils.getSSLSocketFactory_Certificate(null, config.getCertInputStream());
+                    } catch (ClientKeyStoreException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (sslSocketFactory != null) {
+                    okHttpClientBuilder.sslSocketFactory(sslSocketFactory);
+                }
+
+            }
+            OkHttpClient okHttpClient = okHttpClientBuilder.build();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(config.getBaseUrl())
                     .client(okHttpClient)
@@ -41,5 +75,6 @@ public class RetrofitClient {
         }
         return mServiceApi;
     }
+
 
 }

@@ -1,15 +1,12 @@
 package com.bsoft.http.request.retrofit;
 
 import android.content.Context;
-import android.graphics.Path;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.bsoft.http.HttpEnginerConfig;
 import com.bsoft.http.converter.IConverter;
 import com.bsoft.http.entity.ProgressInfo;
-import com.bsoft.http.exception.ConvertException;
 import com.bsoft.http.exception.HttpException;
 import com.bsoft.http.exception.IOStreamReadException;
 import com.bsoft.http.httpcallback.IHttpCallback;
@@ -22,7 +19,6 @@ import com.bsoft.http.utils.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -32,11 +28,9 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
